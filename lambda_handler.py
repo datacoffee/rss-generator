@@ -20,18 +20,28 @@ def lambda_handler(event, context):
     feed = {'build_date': datetime.now().strftime("%a, %d %b %Y %H:%M:%S GMT")}
     feed['items'] = ""
 
-    # TODO check if episode # is number!
-    for record in [i for i in items['Items'] if 'meta' in i.keys() and i['meta']['published']]:
+    # TODO check if episode # is a number!
+    published = []
+    for i in items['Items']:
+        if 'meta' in i.keys() and i['meta']['published']:
+            published.append(i)
+
+    for record in sorted(published, reverse=True, key=lambda x: int(x['episode'])):
         episode = {}
         meta = record['meta']
-        episode['title'] = f'{record["episode"]}. {meta["title"]}'
+        episode_number = record['episode']
+        if meta['season'] > 1:
+            episode_number += f' (S{meta["season"]}E{meta["episode"]})'
+        episode['title'] = f'{episode_number}. {meta["title"]}'
+        if 'guest' in meta:
+            episode['title'] += ' (гостевой)'
         episode['link'] = meta['web_url']
         episode['mp3_url'] = f'{S3_PREFIX}{record["episode"]}.mp3'
         episode['duration_seconds'] = meta['duration_seconds']
         episode['image_url'] = f'{S3_PREFIX}{record["episode"]}.png'
         episode['mp3_size_bytes'] = meta['mp3_size_bytes']
         episode['season'] = meta['season']
-        episode['episode'] = record['episode']
+        episode['episode'] = meta['episode']
 
         # construct description
         if 'description_html' in meta:

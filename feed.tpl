@@ -10,7 +10,7 @@
 		</image>
 		<generator>Data Coffee</generator>
 		<lastBuildDate>$build_date</lastBuildDate>
-		<atom:link href="http://podcast.datacoffee.link/rss" rel="self" type="application/rss+xml"/>
+		<atom:link href="http://rss.datacoffee.link/" rel="self" type="application/rss+xml"/>
 		<author><![CDATA[Data Coffee]]></author>
 		<copyright><![CDATA[Data Coffee]]></copyright>
 		<language><![CDATA[ru]]></language>
