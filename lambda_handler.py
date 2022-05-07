@@ -38,9 +38,9 @@ def lambda_handler(event, context):
             description_html = meta['description_html']
         else:
             if 'guest' in meta:
-                description_html = '<p>Гостевой эпизод</p><p><br></p>\n'
+                description_html = f'<p><strong>Тема выпуска {meta["title"]}</strong></p>\n<p>В гостях у подкаста `Data Coffee` {meta["guest"]["title"]} — {meta["guest"]["name"]}</p>\n<p><br></p>\n'
             else:
-                description_html = '<p>Новостной эпизод</p><p><br></p>'
+                description_html = '<p><strong>Ведущие подкаста `Data Coffee` обсуждают новости и делятся своими мыслями!</strong></p>\n<p><br></p>\n'
             if 'promo_text' in meta:
                 description_html += f'<p>{meta["promo_text"]}</p><p><br></p>\n'
             description_html += '<p>Shownotes:</p>\n'
