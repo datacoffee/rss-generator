@@ -34,16 +34,16 @@ def lambda_handler(event, context):
         episode['episode'] = record['episode']
 
         # construct description
-        if 'guest' in meta:
-            description_html = '<p>Гостевой эпизод</p><p><br></p>\n'
-        else:
-            description_html = '<p>Новостной эпизод</p><p><br></p>'
-        if 'promo_text' in meta:
-            description_html += f'<p>{meta["promo_text"]}</p><p><br></p>\n'
-        description_html += '<p>Shownotes:</p>\n'
         if 'description_html' in meta:
             description_html = meta['description_html']
         else:
+            if 'guest' in meta:
+                description_html = '<p>Гостевой эпизод</p><p><br></p>\n'
+            else:
+                description_html = '<p>Новостной эпизод</p><p><br></p>'
+            if 'promo_text' in meta:
+                description_html += f'<p>{meta["promo_text"]}</p><p><br></p>\n'
+            description_html += '<p>Shownotes:</p>\n'
             prev_dttm = datetime.strptime(record['records'][-1], "%m/%d/%Y, %H:%M:%S")
             for chapter in [i for i in record['news'] if len(i['chapters'])]:
                 dttm = datetime.strptime(chapter['chapters'][-1], "%m/%d/%Y, %H:%M:%S")

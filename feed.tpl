@@ -26,7 +26,6 @@
 		<itunes:category text="News">
 			<itunes:category text="Tech News"/>
 		</itunes:category>
-		<itunes:image href="https://datacoffee.link/datacoffee-logo.jpg"/>
-$items
+		<itunes:image href="https://datacoffee.link/datacoffee-logo.jpg"/>$items
 	</channel>
 </rss>
