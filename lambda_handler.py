@@ -37,7 +37,7 @@ def lambda_handler(event, context):
             episode['title'] += ' (гостевой)'
         episode['link'] = meta['web_url']
         episode['mp3_url'] = f'{S3_PREFIX}{record["episode"]}.mp3'
-        episode['duration_seconds'] = str(timedelta(seconds=meta['duration_seconds']))
+        episode['duration_seconds'] = str(timedelta(seconds=int(meta['duration_seconds'])))
         episode['image_url'] = f'{S3_PREFIX}{record["episode"]}.png'
         episode['mp3_size_bytes'] = meta['mp3_size_bytes']
         episode['season'] = meta['season']
