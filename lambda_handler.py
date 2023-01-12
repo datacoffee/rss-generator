@@ -6,11 +6,8 @@ from datetime import datetime, timedelta
 from string import Template
 from html import escape
 
-# NEWS_TABLE = os.environ['DYNAMO_NEWS']
+
 CHAPTERS_LENGHT = int(os.environ['CHAPTERS_LENGHT'])
-# S3_PREFIX = os.environ['S3_PREFIX']
-# FEED_TPL = Template(open("feed.tpl").read())
-# EPISODE_TPL = Template(open("item.tpl").read())
 
 
 def lambda_handler(event, context):
@@ -28,8 +25,8 @@ def lambda_handler(event, context):
     feed = {'build_date': datetime.now().strftime("%a, %d %b %Y %H:%M:%S GMT")}
     feed['items'] = ""
 
-    # TODO check if episode # is a number!
     published = []
+    
     for i in items['Items']:
         if 'meta' in i.keys() and i['meta']['published']:
             published.append(i)
