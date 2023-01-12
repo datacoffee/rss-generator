@@ -1,18 +1,23 @@
 import os
 import re
+import json
 import boto3
 from datetime import datetime, timedelta
 from string import Template
 from html import escape
 
-NEWS_TABLE = os.environ['DYNAMO_NEWS']
+
 CHAPTERS_LENGHT = int(os.environ['CHAPTERS_LENGHT'])
-S3_PREFIX = os.environ['S3_PREFIX']
-FEED_TPL = Template(open("feed.tpl").read())
-EPISODE_TPL = Template(open("item.tpl").read())
 
 
 def lambda_handler(event, context):
+    print(event["rawPath"])
+    CONFIG = json.loads(os.environ['CONFIG'])
+    NEWS_TABLE = CONFIG[event["rawPath"]]["table"]
+    S3_PREFIX = CONFIG[event["rawPath"]]["s3_prefix"]
+    FEED_TPL = Template(open(CONFIG[event["rawPath"]]["feed_tpl"]).read())
+    EPISODE_TPL = Template(open("item.tpl").read())
+    
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(NEWS_TABLE)
     items = table.scan()
@@ -20,18 +25,22 @@ def lambda_handler(event, context):
     feed = {'build_date': datetime.now().strftime("%a, %d %b %Y %H:%M:%S GMT")}
     feed['items'] = ""
 
-    # TODO check if episode # is a number!
     published = []
+    
     for i in items['Items']:
         if 'meta' in i.keys() and i['meta']['published']:
             published.append(i)
 
-    for record in sorted(published, reverse=True, key=lambda x: int(x['episode'])):
+    for record in sorted(published, reverse=True, key=lambda x: int(x['episode'].split("-")[-1])):
         episode = {}
         meta = record['meta']
         episode_number = record['episode']
-        if meta['season'] > 1:
-            episode_number += f' (S{meta["season"]}E{meta["episode"]})'
+        if "season" in meta:
+            episode['season'] = meta['season']
+            if meta['season'] > 1:
+                episode_number += f' (S{meta["season"]}E{meta["episode"]})'
+        else:
+            episode['season'] = record['episode'][1:].split("-")[0]
         episode['title'] = f'{episode_number}. {meta["title"]}'
         if 'guest' in meta:
             episode['title'] += ' (гостевой)'
@@ -40,7 +49,6 @@ def lambda_handler(event, context):
         episode['duration_seconds'] = str(timedelta(seconds=int(meta['duration_seconds'])))
         episode['image_url'] = f'{S3_PREFIX}{record["episode"]}.png'
         episode['mp3_size_bytes'] = meta['mp3_size_bytes']
-        episode['season'] = meta['season']
         episode['episode'] = meta['episode']
 
         # construct description
