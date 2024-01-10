@@ -20,7 +20,7 @@
 		<itunes:type>episodic</itunes:type>
 		<itunes:owner>
 			<itunes:name>Data Coffee</itunes:name>
-			<itunes:email>data.coffee@yahoo.com</itunes:email>
+			<itunes:email>podcast@datacoffee.link</itunes:email>
 		</itunes:owner>
 		<itunes:explicit>No</itunes:explicit>
 		<itunes:category text="News">
